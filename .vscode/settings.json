@@ -9,6 +9,7 @@
         "assert.h": "c",
         "__functional_03": "cpp",
         "functional": "cpp",
-        "server.h": "c"
+        "server.h": "c",
+        "select.h": "c"
     }
 }

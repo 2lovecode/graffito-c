@@ -39,7 +39,9 @@ int main(int argc, char **argv) {
 
     // 初始化module server.moduleapi
     // moduleInitModulesSystem()
-    
+    // server.moduleapi = dictCreate(&moduleAPIDictType,NULL);
+    // server.sharedapi = dictCreate(&moduleAPIDictType,NULL);
+
     // 加载用户配置参数
 
     // 处理为守护进程
