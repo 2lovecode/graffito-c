@@ -4,6 +4,8 @@
         "complex": "c",
         "time.h": "c",
         "cstdlib": "c",
-        "zmalloc.h": "c"
+        "zmalloc.h": "c",
+        "redisassert.h": "c",
+        "assert.h": "c"
     }
 }
