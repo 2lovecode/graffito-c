@@ -1,25 +1,28 @@
-#include <stdio.h>
-#include <stdlib.h>
-
-#include <unistd.h>
-#include <fcntl.h>
-#include <ctype.h>
-#include <sys/time.h>
-#include <locale.h>
-#include "dict.h"
-
-struct redisServer {
-    /* General */
-    pid_t pid;
-
-    /* Modules */
-    dict *moduleapi;            /* Exported core APIs dictionary for modules. */
-    dict *sharedapi;            /* Like moduleapi but containing the APIs that
-                                   modules share with each other. */
-};
+#include "server.h"
 
 struct redisServer server;
 
+void daemonize(void) {
+    int fd;
+
+    if (fork() != 0) exit(0);
+    setsid();
+    if ((fd = open("/dev/null", O_RDWR, 0)) != -1) {
+        dup2(fd, STDIN_FILENO);
+        dup2(fd, STDOUT_FILENO);
+        dup2(fd, STDERR_FILENO);
+        if (fd > STDERR_FILENO) close(fd);
+    }
+}
+
+void serverLog(int level, const char *fmt, ...) {
+    printf("%s", fmt);
+}
+
+int serverCron(struct aeEventLoop *eventLoop, long long id, void *clientData) {
+    printf("good morning!\n");
+    return 0;
+}
 
 int main(int argc, char **argv) {
     struct timeval tv;
@@ -41,23 +44,13 @@ int main(int argc, char **argv) {
 
     // 处理为守护进程
     // daemonize()
+    aeEventLoop *el = aeCreateEventLoop(1);
 
-    printf("Hello");
-}
-
-void daemonize(void) {
-    int fd;
-
-    if (fork() != 0) exit(0);
-    setsid();
-    if ((fd = open("/dev/null", O_RDWR, 0)) != -1) {
-        dup2(fd, STDIN_FILENO);
-        dup2(fd, STDOUT_FILENO);
-        dup2(fd, STDERR_FILENO);
-        if (fd > STDERR_FILENO) close(fd);
+    if (aeCreateTimeEvent(el, 1, serverCron, NULL, NULL) == AE_ERR) {
+        serverLog(1, "Can't create event loop timers.");
+        exit(1);
     }
-}
-
-void serverLog(int level, const char *fmt, ...) {
-    printf("%s", fmt);
+    aeMain(el);
+    aeDeleteEventLoop(el);
+    printf("Hello");
 }

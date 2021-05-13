@@ -6,6 +6,9 @@
         "cstdlib": "c",
         "zmalloc.h": "c",
         "redisassert.h": "c",
-        "assert.h": "c"
+        "assert.h": "c",
+        "__functional_03": "cpp",
+        "functional": "cpp",
+        "server.h": "c"
     }
 }
